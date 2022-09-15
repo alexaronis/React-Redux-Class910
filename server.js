@@ -1,8 +1,31 @@
+
 const Sequelize = require('sequelize');
-const {UUID, UUIDV4, STRING} = Sequelize
+const {UUID, UUIDV4, STRING} = Sequelize;
+const express = require("express");
+const app = express();
+const path = require("path")
 
 const conn = new Sequelize(process.env.DATABASE_URL || 'postgres://localhost/acme_hr_2207')
 
+app.use('/dist', express.static('dist'));//to use files from dist ie webpack and react
+
+app.get('/', async(req, res)=> res.sendFile(path.join(__dirname, 'index.html')));
+
+app.get('/api/users', async(req, res, next)=>{
+    try{
+        res.send(await User.findAll())
+    }catch(err){
+        next(err)
+    }
+})
+
+app.get('/api/departments', async(req, res, next)=>{
+    try{
+        res.send(await Department.findAll())
+    }catch(err){
+        next(err)
+    }
+})
 
 const User = conn.define('user', {
     id: {
@@ -52,12 +75,17 @@ const init = async()=>{
             
             lucy.departmentId = engineering.id;
             ethyl.departmentId = engineering.id;
-            larry.departmentId = hr.id
+            larry.departmentId = hr.id;
+            
             await Promise.all([
                 lucy.save(),
                 ethyl.save(),
                 larry.save()
                 ]);
+                
+                
+        const port = process.env.PORT || 3000;
+        app.listen(port, ()=> console.log(`listening on port ${port}`));
     }
     catch(err){
         console.log(err);
