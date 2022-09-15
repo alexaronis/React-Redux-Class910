@@ -12,6 +12,9 @@ const reducer = (state = intitialState, action) =>{//redux needs reducer because
       if(action.type === 'SET_DEPARTMENTS'){
        state = {...state, departments: action.departments};//we use the ... to get the current state, and then add action users to get the updated state
    }
+   if(action.type === 'NEW_USER'){
+       state = {...state, users: [...state.users, action.user]};//we use the ... to get the current state, and then add action users to get the updated state
+   }
    console.log(state);
     return state
     

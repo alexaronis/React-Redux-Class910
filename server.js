@@ -6,10 +6,11 @@ const app = express();
 const path = require("path")
 
 const conn = new Sequelize(process.env.DATABASE_URL || 'postgres://localhost/acme_hr_2207')
-
+app.use(express.json());
 app.use('/dist', express.static('dist'));//to use files from dist ie webpack and react
 
 app.get('/', async(req, res)=> res.sendFile(path.join(__dirname, 'index.html')));
+
 
 app.get('/api/users', async(req, res, next)=>{
     try{
@@ -41,6 +42,14 @@ const User = conn.define('user', {
         }
     }
 })
+app.post('/api/users', async(req, res, next)=>{
+    try{
+        res.status(201).send(await User.create(req.body))
+    }catch(err){
+        next(err)
+    }
+})
+
 
 const Department = conn.define('department', {
     id: {

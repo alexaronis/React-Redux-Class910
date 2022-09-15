@@ -2462,6 +2462,104 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./src/Departments.js":
+/*!****************************!*\
+  !*** ./src/Departments.js ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+
+ //allows us to access the store directly
+
+
+
+const Departments = () => {
+  const dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useDispatch)();
+  const departments = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useSelector)(state => {
+    return state.departments;
+  });
+  const users = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useSelector)(state => {
+    return state.users;
+  });
+
+  const addUser = async department => {
+    try {
+      const name = `${Math.random()}${department.name}`;
+      const response = await axios__WEBPACK_IMPORTED_MODULE_2___default().post('/api/users', {
+        departmentId: department.id,
+        name
+      });
+      dispatch({
+        type: 'NEW_USER',
+        user: response.data
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", null, departments.map(department => {
+    const usersInDepartment = users.filter(user => user.departmentId === department.id);
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+      key: department.id
+    }, " ", department.name, " ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+      onClick: () => addUser(department)
+    }, "+"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", null, usersInDepartment.map(user => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+      key: user.id
+    }, user.name))));
+  }));
+}; //<hr />;//we can write dom elements like this b/c of React
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Departments);
+
+/***/ }),
+
+/***/ "./src/Users.js":
+/*!**********************!*\
+  !*** ./src/Users.js ***!
+  \**********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+
+ //allows us to access the store directly
+
+const Users = () => {
+  const users = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useSelector)(state => {
+    return state.users;
+  });
+  const departments = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useSelector)(state => state.departments);
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", null, users.map(user => {
+    const department = departments.find(department => department.id === user.departmentId);
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+      key: user.id
+    }, " ", user.name, department ? `(${department.name})` : null);
+  }));
+}; //<hr />;//we can write dom elements like this b/c of React
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Users);
+
+/***/ }),
+
 /***/ "./src/store.js":
 /*!**********************!*\
   !*** ./src/store.js ***!
@@ -2492,6 +2590,12 @@ const reducer = (state = intitialState, action) => {
   if (action.type === 'SET_DEPARTMENTS') {
     state = { ...state,
       departments: action.departments
+    }; //we use the ... to get the current state, and then add action users to get the updated state
+  }
+
+  if (action.type === 'NEW_USER') {
+    state = { ...state,
+      users: [...state.users, action.user]
     }; //we use the ... to get the current state, and then add action users to get the updated state
   }
 
@@ -39479,6 +39583,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _Departments__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Departments */ "./src/Departments.js");
+/* harmony import */ var _Users__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Users */ "./src/Users.js");
+
+
 
 
 
@@ -39533,7 +39641,11 @@ const App = () => {
 
     fetchDepartments();
   }, []);
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("h1", null, "Welcome to Acme HR"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", null, "We currently have ", users.length, " users! We currently have ", departments.length, " departments!"));
+  return (
+    /*#__PURE__*/
+    //we can reference Departments and Users directly like this if we set up another file with a matching name
+    react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("h1", null, "Welcome to Acme HR"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", null, "We currently have ", users.length, " users! We currently have ", departments.length, " departments!"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("main", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_Departments__WEBPACK_IMPORTED_MODULE_5__["default"], null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("main", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_Users__WEBPACK_IMPORTED_MODULE_6__["default"], null)))
+  );
 };
 
 root.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(react_redux__WEBPACK_IMPORTED_MODULE_3__.Provider, {

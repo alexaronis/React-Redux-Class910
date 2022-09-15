@@ -1,8 +1,10 @@
 import {createRoot} from 'react-dom/client';
-import React, { useEffect } from 'react'
-import store from './store'
-import { Provider, useDispatch, useSelector } from 'react-redux'
-import axios from 'axios'
+import React, { useEffect } from 'react';
+import store from './store';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
+import Departments from './Departments';
+import Users from './Users'
 //useSelector is used so that we don't have to use 'subscribe' every time we want to update the store
 const root = createRoot(document.querySelector('#root'));
 //we want to load Users and Departments. we need axios to do that, but we get to axios
@@ -41,14 +43,19 @@ const App = ()=>{
         
     }, []);
     
-    return (
+    return (//we can reference Departments and Users directly like this if we set up another file with a matching name
         <div>
           <h1>Welcome to Acme HR</h1>
           <div>
             We currently have {users.length} users!
             We currently have {departments.length} departments!
           </div>
-        
+          <main>
+            <Departments />
+          </main>
+          <main>
+            <Users />
+          </main>
         
         </div>
         )
